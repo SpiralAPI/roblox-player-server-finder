@@ -10,4 +10,4 @@ only non-native python library used is "requests", you can install easily by run
 simply run and enter the targets username
 
 # safety
-the script only contacts official roblox endpoints and wont any data, but if you wanna be safe you can look through the code (good on you for being cautious)
+the script only contacts official roblox endpoints and wont retain any data, but if you wanna be safe you can look through the code (good on you for being cautious)
