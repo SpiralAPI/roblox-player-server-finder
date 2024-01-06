@@ -10,7 +10,7 @@ import json
 import subprocess 
 
 #==FUNCTIONS==
-def GetID(Username):
+def GetID(Username): # Retrieves userid via a username
     resp = requests.post("https://users.roblox.com/v1/usernames/users", json={"usernames": [Username], "excludeBannedUsers": True})
 
     if resp.json()["data"][0]["id"]:
@@ -18,7 +18,7 @@ def GetID(Username):
 
     return None
 
-def GetRecentBadge(UserID):
+def GetRecentBadge(UserID): # retrieves 10 most recent badges via a userid
     resp = requests.get(f"https://badges.roblox.com/v1/users/{UserID}/badges?limit=10&sortOrder=Desc")
 
     try:
@@ -26,7 +26,7 @@ def GetRecentBadge(UserID):
     except:
         return None
     
-def GetGameFromBadge(BadgeID):
+def GetGameFromBadge(BadgeID): # retrives the game a badge belongs to
     resp = requests.get(f"https://badges.roblox.com/v1/badges/{BadgeID}")
 
     try:
@@ -34,7 +34,7 @@ def GetGameFromBadge(BadgeID):
     except:
         return None, None
     
-def GetServers(GameID):
+def GetServers(GameID): # gets all servers in a game
     cursor = ""
     complete = False
 
@@ -55,11 +55,11 @@ def GetServers(GameID):
 
     return finalReturn
 
-def CopyToClipboard(txt):
+def CopyToClipboard(txt): # self explanatory
     cmd='echo '+txt.strip()+'|clip'
     return subprocess.check_call(cmd, shell=True)
     
-def FindUserInGame(UserID, GameID):
+def FindUserInGame(UserID, GameID): # the main function. searches all servers in a game for a user (using their headshot)
     targetThumb = requests.get(f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={UserID}&size=150x150&format=Png&isCircular=false").json()["data"][0]["imageUrl"]
 
     servers = GetServers(GameID)
@@ -90,7 +90,7 @@ def FindUserInGame(UserID, GameID):
     
     return None
 
-def clearConsole():
+def clearConsole(): # purely visuals
     os.system('cls' if os.name=='nt' else 'clear')
     print("""
 :'######::'########::'####:'########:::::'###::::'##::::::::
@@ -109,7 +109,7 @@ clearConsole()
 
 targetValid = False
 targetID = 0
-while (targetValid == False):
+while (targetValid == False): # inputs for an easy to use program
     user = input("Please enter your targets username (type 'exit' to quit): ")
     if user == "exit":
         clearConsole()
@@ -126,6 +126,7 @@ clearConsole()
 
 badgeID = GetRecentBadge(targetID)
 
+# checks for if the program could not run 
 if badgeID == None:
     sys.exit("Could not fetch badge.")
 
@@ -139,11 +140,12 @@ ServerInfo = FindUserInGame(targetID, GameId)
 if ServerInfo == None:
     sys.exit("Could not find user in any games.")
 
-link = f"Roblox.GameLauncher.joinGameInstance({GameId}, '{ServerInfo['id']}')"
+link = f"Roblox.GameLauncher.joinGameInstance({GameId}, '{ServerInfo['id']}')" # the link to join their server
 
 clearConsole()
 
 CopyToClipboard(link)
 
+# the final message
 input(f"User was found in {GameName}. \n\nTo join this user, press any key. A line of code will be copied automatically, or you can copy it manually below. Paste the code in your inspect element console at https://roblox.com \n\nCODE: {link}")
 
